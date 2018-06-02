@@ -2,6 +2,26 @@
 Self-Driving Car Engineer Nanodegree Program
 
 ---
+## Introduction
+This project is the implementation of Model Predictive Controller. The project's aim was to complete a full lap in the track provided in the Udacity simulator using MPC, while handling a 100 millisecond latency to mimic a realistic application. Cost weight parameters were tuned to maximize speed, while maintaining safety and driveability at lower speeds.
+
+## Rubric Points
+- **The Model**: *Student describes their model in detail. This includes the state, actuators and update equations.*
+The kinematic model includes the vehicle's x and y coordinates, orientation angle (psi), and velocity, as well as the cross-track error and psi error (epsi). Actuator outputs are acceleration and delta (steering angle). The model combines the state and actuations from the previous timestep to calculate the state for the current timestep.
+
+- **Timestep Length and Elapsed Duration (N & dt)**: *Student discusses the reasoning behind the chosen N (timestep length) and dt (elapsed duration between timesteps) values. Additionally the student details the previous values tried.*
+
+The values chosen for N and dt are 10 and 0.1, respectively. Admittedly, this was at the suggestion of Udacity's provided office hours for the project. These values mean that the optimizer is considering a one-second duration in which to determine a corrective trajectory. Adjusting either N or dt (even by small amounts) often produced erratic behavior. Other values tried include 20 / 0.05, 8 / 0.125, 6 / 0.15, and many others.
+
+- **Polynomial Fitting and MPC Preprocessing**: *A polynomial is fitted to waypoints. If the student preprocesses waypoints, the vehicle state, and/or actuators prior to the MPC procedure it is described.*
+The waypoints are preprocessed by transforming them to the vehicle's perspective. This simplifies the process to fit a polynomial to the waypoints because the vehicle's x and y coordinates are now at the origin (0, 0) and the orientation angle is also zero.
+
+- **Model Predictive Control with Latency**: *The student implements Model Predictive Control that handles a 100 millisecond latency. Student provides details on how they deal with latency.*
+Latency was introduced into the system to simulate delay that could occur as a result of various factors including communication delyas, actuator delays, or ignored vehicle dynamics. In order to design a controller that is robust enough to handle 100 ms latency, the actual state of the vehicle was predicted 100 ms into the future and fed into the controller, which will in turn provide actuation commands that maps to the vehicles future state which will actually be close enough to the present state when the actuation commands are actually executed.
+
+A cost was added to account for every parameter to be optimized, along for a specific weight to be multiplied by each cost. Cost are CTE, EPSI, V, DELTA, A, DELTA_V, D_DELTA, D_A. In addition to the cost parameters mentioned in the lectures, another parameter was added to account for high velocity curves to avoid high lateral forces. Cost weights were tuned based on trial and error.
+
+Three video files can be found in the repository's root directory. They represent the controllers ability to drive along the track at three different speeds (40, 80, 100 mph).
 
 ## Dependencies
 
